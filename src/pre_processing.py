@@ -40,10 +40,10 @@ def preprocess_df(df, text_column='text', target_column='target'):
     try:
         logger.debug("Starting Preprocessing")
         encoder=LabelEncoder()
-        df[target_column]=encoder.fit_transform(df[target_column])
+        df[target_column]=encoder.fit_transform(df[target_column]) #cant understand-LabelEncoder` from `sklearn` converts **categorical labels into numeric values*
         logger.debug("Target column encoded")
 
-        df.loc[:, text_column]= df[text_column].apply(transform_text) #cant understand
+        df.loc[:, text_column]= df[text_column].apply(transform_text) #Update the entire column with the cleaned version -details in .txt file
         logger.debug("Text column transform")
         return df
     except KeyError as e:
@@ -77,4 +77,4 @@ def main(text_column='text', target_column='target'):
 if __name__== '__main__':
     main()
 
-
+#train_preprocecssed data and test_processed data is created

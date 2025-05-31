@@ -1,0 +1,132 @@
+1.data_injestion.py
+
+    1.Here we get two files train.csv and test.csv
+    
+----------------------------------------------------------------------------------------------------
+
+2.pre_processing.py
+
+✅ **What this does:**
+- `LabelEncoder` from `sklearn` converts **categorical labels into numeric values**.
+  
+📌 **Why?**  
+Most ML algorithms can't handle text labels like `"spam"` or `"ham"`. This turns them into numbers like `1` and `0`.
+
+🧠 **Example:**
+
+| target (before) | target (after) |
+|-----------------|----------------|
+| spam            | 1              |
+| ham             | 0              |
+
+---
+
+#### ```python
+df.loc[:, text_column] = df[text_column].apply(transform_text)
+
+
+✅ What this does:
+
+Applies a text transformation function (transform_text) to each value in the text column.
+
+📌 transform_text likely does:
+Lowercasing
+Removing punctuation
+Removing stopwords (like "the", "is", "and")
+Stemming (reducing words to their root)
+
+🧠 Example:
+
+Original Text	Transformed Text
+"Thanks for your message!"	thank messag
+"I really appreciate it. See you soon"	realli appreci see soon
+
+✅ df.loc[:, text_column] is just a way of saying: “Update the entire column with the cleaned version”.
+
+----------------------------------------------------------------------------------------------------------------------
+
+3.Feature engineering 
+
+max_features: Limits the number of most important words (based on frequency and uniqueness) to include in the matrix. For example, if max_features=1000, only the 1000 most informative words are used.
+TF-IDF (Term Frequency–Inverse Document Frequency):
+
+Measures how important a word is to a document relative to all other documents.
+
+Words like "the", "and" are common everywhere and get lower scores.
+
+Rare, meaningful words get higher scores.
+
+Separates the text (`x_train`, `x_test`) and target labels (`y_train`, `y_test`) from both datasets.
+
+fit_transform: Learns the vocabulary and computes the TF-IDF matrix for training data.
+
+transform: Uses the same vocabulary to compute TF-IDF values for test data.
+
+Converts the sparse matrix into a regular pandas DataFrame (`x_train_bow.toarray()`).
+- Adds the label column back for supervised learning.
+
+---------------------------------------------------------------------------------------------
+
+4.model training
+
+Shape Check: It checks if x_train and y_train have the same number of rows (they do — 4).
+
+Model Initialization: A Random Forest with 10 trees is created.
+
+Model Training: It learns patterns from the data.Fits (trains) the model on the training data.
+{x_train: input features.
+y_train: labels.}
+
+Model Returned: You get a trained model you can use to make predictions.
+
+-------------------------------------------------------------------------------------------------
+
+Understanding .fit() vs .fit_transform()
+✅ clf.fit(x_train, y_train) – Training a model
+Used with: Machine Learning models, like RandomForestClassifier, LogisticRegression, etc.
+
+Purpose:
+Learn patterns from the input features x_train and their corresponding labels y_train.
+
+This is where your model learns.
+
+Think of it as:
+📘 "Study the textbook (x_train) and memorize the answers (y_train)."
+
+✅ vectorizer.fit_transform(x_train) – Learning vocabulary + transforming text into numbers
+Used with: Transformers, like TfidfVectorizer, CountVectorizer, StandardScaler, etc.
+
+Purpose:
+.fit() → Learns the structure/statistics needed (e.g., vocabulary from the text).
+
+.transform() → Converts the raw data into numerical format based on what was learned.
+
+.fit_transform() = Both steps in one.
+
+Think of it as:
+🧾 "First, learn the dictionary of words (fit), then use it to turn a sentence into a vector of word weights (transform)."
+
+---------------------------------------------------------------------------------------
+
+5.model evaluation
+
+Uses the trained classifier (clf) to predict class labels for the test data (x_test).
+The result, y_pred, is an array of predicted classes (e.g., 0 or 1 for binary classification).
+
+Calls predict_proba, which returns the probability estimates for each class.
+[:, 1] selects the probability of class 1 (usually the "positive" class in binary classification).
+
+[[0.2, 0.8],    # 80% chance it's class 1
+ [0.9, 0.1],    # 10% chance it's class 1
+ [0.3, 0.7]]    # 70% chance it's class 1
+
+This gives the model’s confidence that each input belongs to class 1 (positive class).
+
+Summary Table:
+Line	               Purpose  	                                Output
+clf.predict(x_test)	    Predicts class labels	                    [0, 1, 1, ...]
+clf.predict_proba(...)	Predicts class probabilities	        [[0.3, 0.7], [0.8, 0.2], ...]
+[:, 1]	                Extracts probability of class 1	                 [0.7, 0.2, ...]
+
+
+---------------------------------------------------------------------------------------------------
