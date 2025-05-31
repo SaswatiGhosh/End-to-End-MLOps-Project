@@ -54,6 +54,7 @@ def preprocess_df(df, text_column='text', target_column='target'):
         raise
 def main(text_column='text', target_column='target'):
     try:
+        # print('Finally into main function')
         train_data=pd.read_csv('./data/raw/train.csv')
         test_data=pd.read_csv('./data/raw/test.csv')
         logger.debug(" Data loaded properly")

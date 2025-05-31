@@ -54,7 +54,7 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def save_data(train_data:pd.DataFrame , test_data:pd.DataFrame, data_path:str):
     try:
-        raw_data_path=os.path.join(data_path, './raw')
+        raw_data_path=os.path.join(data_path, 'raw')
         os.makedirs(raw_data_path, exist_ok=True)
         train_data.to_csv(os.path.join(raw_data_path,'train.csv'), index=False)
         test_data.to_csv(os.path.join(raw_data_path,'test.csv'), index=False)
@@ -73,6 +73,7 @@ def main():
         # print(final_df)
         train_data, test_data= train_test_split(final_df, test_size=test_size, random_state=2)
         save_data(train_data=train_data, test_data=test_data, data_path='./data')
+        print("Execution completed")
     except Exception as e:
         logger.error('Failed to complete data ingestion %s ',e )
         raise #why do we use
